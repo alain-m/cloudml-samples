@@ -43,6 +43,7 @@ gcloud beta ml jobs submit training "$JOB_ID" \
   --region us-central1 \
   -- \
   --output_path "${GCS_PATH}/training" \
+  --eval_set_size $(($LABEL_COUNT + 1)) \
   --eval_data_paths "${GCS_PATH}/preproc/eval*" \
   --train_data_paths "${GCS_PATH}/preproc/train*" \
   --label_count ${LABEL_COUNT}
