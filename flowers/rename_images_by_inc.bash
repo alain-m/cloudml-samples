@@ -2,7 +2,7 @@
 # Rename image files in the specifed folder with incremental numbers
 
 if [ $# -lt 2 ];then
-  echo "Please provide a folder path + a prefix"
+  echo "Syntax: $0 <folder_path> <filename_prefix>"
   exit 1
 fi
 
