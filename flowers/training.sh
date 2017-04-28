@@ -34,6 +34,9 @@ echo
 echo "Using job id: " $JOB_ID
 set -v -e
 
+EVAL_SET_SIZE=`gsutil cat "${BUCKET}/${MODEL_NAME}_datasets/eval_set.csv" | wc -l`
+echo "Eval set size: " $EVAL_SET_SIZE
+
 # Submit a Cloud ML job to train the classification part of the model:
 # NB : Make sure the 'label_count' is correct for your dataset
 gcloud beta ml jobs submit training "$JOB_ID" \
@@ -43,7 +46,7 @@ gcloud beta ml jobs submit training "$JOB_ID" \
   --region us-central1 \
   -- \
   --output_path "${GCS_PATH}/training" \
-  --eval_set_size $(($LABEL_COUNT + 1)) \
+  --eval_set_size $EVAL_SET_SIZE \
   --eval_data_paths "${GCS_PATH}/preproc/eval*" \
   --train_data_paths "${GCS_PATH}/preproc/train*" \
   --label_count ${LABEL_COUNT}
