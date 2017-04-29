@@ -20,14 +20,13 @@
 # Now that we are set up, we can start processing some flowers images.
 
 : "${MODEL_NAME?Need to set MODEL_NAME}"
+: "${VERSION_NAME?Need to set VERSION_NAME}"
 
 declare -r PROJECT=$(gcloud config list project --format "value(core.project)")
 declare -r JOB_ID="${MODEL_NAME}_deploy_$(date +%Y%m%d_%H%M%S)"  # Unlike the preprocessing jobs, this one needs to contain underscores instead of '-'
 declare -r BUCKET="gs://${PROJECT}-${MODEL_NAME}"
 declare -r GCS_PATH="${BUCKET}"
 declare -r DICT_FILE="${BUCKET}/${MODEL_NAME}_datasets/dict.txt"
-
-declare -r VERSION_NAME=v1
 
 echo "******* DEPLOYMENT ******"
 
@@ -36,7 +35,8 @@ echo "Using job id: " $JOB_ID
 set -v -e
 
 # Create a prediction API with the specified model name.
-gcloud beta ml models create ${MODEL_NAME}
+# NB: We ignore errors because the model might already exist
+gcloud beta ml models create ${MODEL_NAME} || true
 
 # Create and set a default version of the model with the specified version name.
 gcloud beta ml versions create \
